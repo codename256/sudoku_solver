@@ -2,6 +2,8 @@ import re
 
 
 class Sudoku:
+    NUM_OF_POSS = 9**3  # number of all possible values
+
     def __init__(self, user_input):
         self.array = []
         self.fillers = []
@@ -42,11 +44,11 @@ class Sudoku:
     def numeration_help():
         print("Object created!")
         print("Array of initial possible values created")
-        print("Now add some values to it: ")
-        print("Coordinates and values inserted as an integer xyz containing x - row, y - column, z - value")
+        print("Values addition log: ")
+        print("\tCoordinates and values inserted as an integer xyz containing x - row, y - column, z - value")
 
     def add_value(self, val: tuple):
-        print(f"Input value: col {val[0] + 1}, row {val[1] + 1}, num {val[2]}")
+        print(f"\tInput value: col {val[0] + 1}, row {val[1] + 1}, num {val[2]}")
         self.array[val[0]][val[1]] = val[2]
 
     def import_values(self, *args):
@@ -73,23 +75,30 @@ class Sudoku:
     def find_the_cross(self, field_num, showlog=False):
         tb = []  # top-bottom
         lr = []  # left-right
+        cross = set()
 
-        print("Find the cross for field: ({}, {})".format(field_num[0]+1, field_num[1]+1))
-        print("<", self.array[field_num[0]][field_num[1]], ">", sep="", end=" ")
-        print(self.fillers[field_num[0]][field_num[1]])
+        if showlog:
+            print("Find the cross for field: ({}, {})".format(field_num[0]+1, field_num[1]+1))
+            print("Value: <", self.array[field_num[0]][field_num[1]], ">", sep="")
+            print("Possible values: ", self.fillers[field_num[0]][field_num[1]])
 
-        #topbottom
         for i in range(9):
             tb.append(self.array[i][field_num[1]])
             lr.append(self.array[field_num[0]][i])
-        print(tb)
-        print(lr)
 
-        #leftright
+        if showlog:
+            print("top-bottom", tb)
+            print("left-right", lr)
+
+        cross = {*tb, *lr}.difference({" ", self.array[field_num[0]][field_num[1]]})
+        if showlog:
+            print("cross: ", cross)
+
+        return cross
 
     def solve(self, showlog=False):
         self.easy_fillers()
-        self.find_the_cross((0, 0), showlog)
+        self.find_the_cross((5, 6), showlog)
         pass
 
 
@@ -103,4 +112,4 @@ mysud = Sudoku([111, 122, 139, 196,
                 814, 882,
                 923, 941, 957])
 
-mysud.solve(showlog=False)
+mysud.solve(showlog=True)
