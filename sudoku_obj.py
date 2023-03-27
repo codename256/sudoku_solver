@@ -1,6 +1,3 @@
-import re
-
-
 class Sudoku:
     NUM_OF_POSS = 9**3  # number of all possible values
 
@@ -95,6 +92,9 @@ class Sudoku:
             print("cross: ", cross)
 
         return cross
+
+    def cross_fillers(self):
+        pass
 
     def solve(self, showlog=False):
         self.easy_fillers()
