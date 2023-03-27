@@ -15,13 +15,13 @@ class Sudoku:
         self.numeration_help()
 
     def __repr__(self):
+        return str(self.array)
+
+    def __str__(self):
         self.printer = ""
         for line in self.array:
             self.printer += str(line) + "\n"
         return self.printer
-
-    def __str__(self):
-        return self.__repr__()
 
     def show(self):
         print("_" * 25)
@@ -85,3 +85,4 @@ mysud.import_values(111, 122, 139, 196,
                     923, 941, 957)
 
 mysud.easy_fillers(True)  # show=True to show the log
+print(repr(mysud))
