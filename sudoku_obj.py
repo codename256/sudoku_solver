@@ -24,6 +24,7 @@ class Sudoku:
         return self.printer
 
     def show(self):
+        print("\nCurrent state of the sudoku")
         print("_" * 25)
         for i, line in enumerate(self.array):
             print("| ", end="")
@@ -37,15 +38,21 @@ class Sudoku:
                 print("\n" + "-" * 25, end="")
             print()
 
+    def show_vals_fillers(self):
+        for i in range(9):
+            for j in range(9):
+                print("Val: ", self.array[i][j], "Filler: ", self.fillers[i][j])
+
     @staticmethod
     def numeration_help():
-        print("Object created!")
+        print("\nObject created!")
         print("Array of initial possible values created")
         print("Values addition log: ")
         print("\tCoordinates and values inserted as an integer xyz containing x - row, y - column, z - value")
+        print("\tValues of columns and rows are 0-8 code-wise, but are shown as 1-9 for more intuitive approach")
 
     def add_value(self, val: tuple):
-        print(f"\tInput value: col {val[0] + 1}, row {val[1] + 1}, num {val[2]}")
+        print(f"\tInput value: row {val[0] + 1}, col {val[1] + 1}, num {val[2]}")
         self.array[val[0]][val[1]] = val[2]
 
     def import_values(self, *args):
@@ -55,58 +62,76 @@ class Sudoku:
             self.add_value(next_val)
         self.show()
 
-    def easy_fillers(self, show=False):
-        print("1. Set the possible vals for every field")
+    def set_value(self, val):
+        print("Value for this field is determined to be:", val[2])
+        self.add_value(val)
+
+    def init_fillers(self, showlog=False):
+        print("\n1. Set the possible vals for every field")
         counter = 0
         for i, line in enumerate(self.array):
             for j, field in enumerate(line):
                 if field != " ":
                     self.fillers[i][j].intersection_update({field})
                     counter += 8
-                if show:
+                if showlog:
                     print(field, self.fillers[i][j])
-        if not show:
+        if not showlog:
             print("(...)")
         print("Removed {} possible values of {}. One for each field filled with a number".format(counter, 9**3))
 
     def find_the_cross(self, field_num, showlog=False):
         tb = []  # top-bottom
         lr = []  # left-right
-        cross = set()
-
-        if showlog:
-            print("Find the cross for field: ({}, {})".format(field_num[0]+1, field_num[1]+1))
-            print("Value: <", self.array[field_num[0]][field_num[1]], ">", sep="")
-            print("Possible values: ", self.fillers[field_num[0]][field_num[1]])
 
         for i in range(9):
             tb.append(self.array[i][field_num[1]])
             lr.append(self.array[field_num[0]][i])
-
-        if showlog:
-            print("top-bottom", tb)
-            print("left-right", lr)
-
         cross = {*tb, *lr}.difference({" ", self.array[field_num[0]][field_num[1]]})
-        if showlog:
-            print("cross: ", cross)
 
+        if showlog:
+            print("Cross for: ({}, {}) | ".format(field_num[0]+1, field_num[1]+1), end="")
+            print("\tVal: <", self.array[field_num[0]][field_num[1]], "> | ", sep="", end="")
+            print("\tCurrently possible:", str(self.fillers[field_num[0]][field_num[1]]).ljust(27), end=" | ")
+
+            # Uncomment if you want a really detailed log
+            # if showlog:
+            #     print("top-bottom", tb, end=" | ")
+            #     print("left-right", lr, end=" | ")
+
+            print("\tcross:", cross)
         return cross
 
     def find_the_box(self):
         # like finding the cross but for the box 3x3
         pass
 
-    def cross_fillers(self):
-        pass
+    def cross_fillers(self, showlog=False):
+        print("\n2. Remove the cross top-bot left-right values from the fillers")
+        print("If there is only one filler left and the value is ' ', then it'll be updated with the filler")
+        print("Cross fillers search:")
+        print("Update fillers by deleting the cross values from possible decisions")
+        for i, line in enumerate(self.array):
+            for j, val in enumerate(line):
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", self.array[i][j])
+                cross = self.find_the_cross((i, j), showlog=showlog)
+                self.fillers[i][j].difference_update(cross)
+                print(" "*40 + "Updated filler:    ", self.fillers[i][j])
+                if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
+                    print("Updated value from {} to {}".format(self.array[i][j], *self.fillers[i][j]))
+                    try:
+                        self.set_value((i, j, int(*self.fillers[i][j])))
+                    except TypeError:
+                        print("Probably too much fillers to set as int")
+        self.show_vals_fillers()
 
-    def box_fillers(self):
+    def box_fillers(self, showlog=False):
         pass
 
     def solve(self, showlog=False):
-        self.easy_fillers()
-        self.find_the_cross((5, 6), showlog)
-        pass
+        self.init_fillers(showlog)
+        self.cross_fillers(showlog)
+        self.box_fillers(showlog)
 
 
 mysud = Sudoku([111, 122, 139, 196,
