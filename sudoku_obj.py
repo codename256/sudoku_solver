@@ -93,7 +93,14 @@ class Sudoku:
 
         return cross
 
+    def find_the_box(self):
+        # like finding the cross but for the box 3x3
+        pass
+
     def cross_fillers(self):
+        pass
+
+    def box_fillers(self):
         pass
 
     def solve(self, showlog=False):
