@@ -102,28 +102,44 @@ class Sudoku:
             print("\tcross:", cross)
         return cross
 
-    def find_the_box(self):
-        # like finding the cross but for the box 3x3
-        pass
+    def find_the_box(self, field_num, showlog=False):
+        box_ids = dict()
+        box = set()
+        for i in range(3):
+            box_ids[i] = 0
+            box_ids[i+3] = 1
+            box_ids[i+6] = 2
+        box_id = (box_ids[field_num[0]], box_ids[field_num[1]])
+
+        for i in range(3):
+            print()
+            for j in range(3):
+                box.update({self.array[i + 3 * box_id[0]][j + 3 * box_id[1]]})
+                if showlog:
+                    print(f"'{self.array[i+3*box_id[0]][j+3*box_id[1]]}'", end="")
+        box.difference_update(" ")
+        print("\nThe box fillers set is: ", box)
+        return box
 
     def cross_fillers(self, showlog=False):
         print("\n2. Remove the cross top-bot left-right values from the fillers")
         print("If there is only one filler left and the value is ' ', then it'll be updated with the filler")
         print("Cross fillers search:")
-        print("Update fillers by deleting the cross values from possible decisions")
+        print("Update fillers by removing the cross values from possible decisions in fillers")
+
         for i, line in enumerate(self.array):
             for j, val in enumerate(line):
-                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", self.array[i][j])
                 cross = self.find_the_cross((i, j), showlog=showlog)
                 self.fillers[i][j].difference_update(cross)
+
                 print(" "*40 + "Updated filler:    ", self.fillers[i][j])
                 if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
-                    print("Updated value from {} to {}".format(self.array[i][j], *self.fillers[i][j]))
+                    print("Updated value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
                     try:
+                        print("")
                         self.set_value((i, j, int(*self.fillers[i][j])))
                     except TypeError:
                         print("Probably too much fillers to set as int")
-        self.show_vals_fillers()
 
     def box_fillers(self, showlog=False):
         pass
@@ -131,7 +147,10 @@ class Sudoku:
     def solve(self, showlog=False):
         self.init_fillers(showlog)
         self.cross_fillers(showlog)
+        self.show()
+        self.find_the_box((2, 1), showlog)
         self.box_fillers(showlog)
+        # self.show()
 
 
 mysud = Sudoku([111, 122, 139, 196,
@@ -143,5 +162,6 @@ mysud = Sudoku([111, 122, 139, 196,
                 766, 771, 784,
                 814, 882,
                 923, 941, 957])
-
+#,
+#                446, 465, 472
 mysud.solve(showlog=True)
