@@ -15,13 +15,13 @@ class Sudoku:
         self.import_values(*user_input)
 
     def __repr__(self):
+        return str(self.array)
+
+    def __str__(self):
         self.printer = ""
         for line in self.array:
             self.printer += str(line) + "\n"
         return self.printer
-
-    def __str__(self):
-        return self.__repr__()
 
     def show(self):
         print("_" * 25)
