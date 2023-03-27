@@ -4,8 +4,14 @@ import re
 class Sudoku:
     def __init__(self):
         self.array = []
+        self.fillers = []
+
         for _ in range(9):
+            line_filler = []
             self.array.append([" "] * 9)
+            for _ in range(9):
+                line_filler.append(set(map(lambda x: x+1, range(9))))
+            self.fillers.append(line_filler)
         self.numeration_help()
 
     def __repr__(self):
@@ -34,11 +40,12 @@ class Sudoku:
     @staticmethod
     def numeration_help():
         print("Object created!")
+        print("Array of initial possible values created")
         print("Now add some values to it: ")
         print("Coordinates and values inserted as an integer xyz containing x - row, y - column, z - value")
 
     def add_value(self, val: tuple):
-        print(f"Input value: col {val[0]}, row {val[1]}, num {val[2]}")
+        print(f"Input value: col {val[0]+1}, row {val[1]+1}, num {val[2]}")
         self.array[val[0]][val[1]] = val[2]
 
     def import_values(self, *args: int):
@@ -51,14 +58,13 @@ class Sudoku:
     def easy_fillers(self, show=False):
         print("1. Set the possible vals for every field")
         counter = 0
-        for line in self.array:
-            for field in line:
-                poss_val = list(map(lambda x: x + 1, range(9)))
+        for i, line in enumerate(self.array):
+            for j, field in enumerate(line):
                 if field != " ":
-                    poss_val[poss_val.index(field)] = " "
+                    self.fillers[i][j].intersection_update({field})
                     counter += 1
                 if show:
-                    print(field, poss_val)
+                    print(field, self.fillers[i][j])
         if not show:
             print("(...)")
         print("Removed {} possible values. One for each field filled with a number".format(counter))
@@ -78,4 +84,4 @@ mysud.import_values(111, 122, 139, 196,
                     814, 882,
                     923, 941, 957)
 
-mysud.easy_fillers()  # show=True to show the log
+mysud.easy_fillers(True)  # show=True to show the log
