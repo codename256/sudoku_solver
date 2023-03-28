@@ -117,8 +117,10 @@ class Sudoku:
                 box.update({self.array[i + 3 * box_id[0]][j + 3 * box_id[1]]})
                 if showlog:
                     print(f"'{self.array[i+3*box_id[0]][j+3*box_id[1]]}'", end="")
-        box.difference_update(" ")
-        print("\nThe box fillers set is: ", box)
+            box.difference_update({" ", self.array[field_num[0]][field_num[1]]})
+
+        print(f"\nFor field ({field_num[0]+1}, {field_num[1]+1}), val: {self.array[field_num[0]][field_num[1]]} | "
+              f"on screen ({field_num[0] % 3 + 1}, {field_num[1] % 3 + 1}), the box fillers set is: ", box)
         return box
 
     def cross_fillers(self, showlog=False):
@@ -142,14 +144,46 @@ class Sudoku:
                         print("Probably too much fillers to set as int")
 
     def box_fillers(self, showlog=False):
+        for i in range(9):
+            for j in range(9):
+                box = self.find_the_box((i, j), showlog=showlog)
+                self.fillers[i][j].difference_update(box)
+
+                print("\tUpdate filler:    ", self.fillers[i][j])
+                if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
+                    print("Update value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
+                    try:
+                        print("")
+                        self.set_value((i, j, int(*self.fillers[i][j])))
+                    except TypeError:
+                        print("Probably too much fillers to set as int")
+
+    def one_in_a_row(self):
+        # this is a tactic, that is used when a number is in only one field of a row, so it should be there
+        # despite the fact that this field and others have more possible values
+        # in this one we compare fillers sets for each position in a row
+        pass
+
+    def one_in_a_col(self):
+        # this is a tactic, that is used when a number is in only one field of a column, so it should be there
+        # despite the fact that this field and others have more possible values
+        # in this one we compare fillers sets for each position in a column
+        pass
+
+    def one_in_a_box(self):
+        # this is a tactic, that is used when a number is in only one field of a box, so it should be there
+        # despite the fact that this field and others have more possible values
+        # in this one we compare fillers sets for each position in a box
         pass
 
     def solve(self, showlog=False):
         self.init_fillers(showlog)
         self.cross_fillers(showlog)
         self.show()
-        self.find_the_box((2, 1), showlog)
         self.box_fillers(showlog)
+        self.one_in_a_row()
+        self.one_in_a_col()
+        self.one_in_a_box()
         # self.show()
 
 
@@ -165,3 +199,7 @@ mysud = Sudoku([111, 122, 139, 196,
 #,
 #                446, 465, 472
 mysud.solve(showlog=True)
+
+# todo:
+# make the showlog work correctly and make it less ugly
+# add some way to stop the iteration when it's stuck or it finished (with returns from functions if they did sth)
