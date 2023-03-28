@@ -1,5 +1,6 @@
 class Sudoku:
     NUM_OF_POSS = 9 ** 3  # number of all possible values
+    SHOWLOG = False
 
     def __init__(self, user_input):
         self.array = []
@@ -93,12 +94,6 @@ class Sudoku:
             print("Cross for: ({}, {}) | ".format(field_num[0] + 1, field_num[1] + 1), end="")
             print("\tVal: <", self.array[field_num[0]][field_num[1]], "> | ", sep="", end="")
             print("\tCurrently possible:", str(self.fillers[field_num[0]][field_num[1]]).ljust(27), end=" | ")
-
-            # Uncomment if you want a really detailed log
-            # if showlog:
-            #     print("top-bottom", tb, end=" | ")
-            #     print("left-right", lr, end=" | ")
-
             print("\tcross:", cross)
         return cross
 
@@ -172,15 +167,15 @@ class Sudoku:
     def one_in_a_row(self, field_num, showlog=False):
         # if some value is present as possible for only one field, then input it there
         # make a temp, because we'll pop the elements. Use update instead of '=' to have different id's
-
         temp = set()
         temp.update(self.fillers[field_num[0]][field_num[1]])
         fillers_line = set()
+
+        # consider: .update(*self.fillers[field_num[0]][:9]) with removing the element set
         for i in range(9):
-            if i == field_num[1]:
-                continue
-            else:
+            if i is not field_num[1]:
                 fillers_line.update(self.fillers[field_num[0]][i])
+        temp.difference_update(fillers_line)
 
         if showlog:
             print("\nField: {} {}".format(field_num[0] + 1, field_num[1] + 1))
@@ -192,10 +187,8 @@ class Sudoku:
                     print(self.fillers[field_num[0]][i], end="")
             print("] --> Fillers combined: ", fillers_line, end=" ")
             print("| Filler for this field: ", temp)
-
-        temp.difference_update(fillers_line)
-        if showlog:
             print("Value that fits only for this field in a line is: ", temp)
+
         if len(temp) == 1 and self.array[field_num[0]][field_num[1]] is not int(*temp):
             if showlog:
                 print("Value is written")
@@ -214,7 +207,8 @@ class Sudoku:
         pass
 
     def solve(self, showlog=False):
-        for k in range(3):
+        i = 0
+        while True:
             self.init_fillers(showlog)
             self.cross_fillers(showlog)
             self.show()
@@ -222,6 +216,9 @@ class Sudoku:
             self.show()
             self.one_in_all_fillers(showlog)
             self.show()
+            i += 1
+            if i > 10:
+                break
 
 
 mysud = Sudoku([111, 122, 139, 196,
@@ -233,9 +230,20 @@ mysud = Sudoku([111, 122, 139, 196,
                 766, 771, 784,
                 814, 882,
                 923, 941, 957])
+
+other = Sudoku([126, 134, 152,
+                255, 282,
+                323, 348, 361, 394,
+                418, 465, 481, 493,
+                576, 599,
+                622, 663, 685, 698,
+                716, 771,
+                835, 888,
+                953, 966, 989])
 # ,
 #                446, 465, 472
-mysud.solve(showlog=False)
+# mysud.solve(showlog=False)
+other.solve(showlog=True)
 
 # td:
 # make the showlog work correctly and make it less ugly
