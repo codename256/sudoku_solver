@@ -1,6 +1,5 @@
 class Sudoku:
     NUM_OF_POSS = 9 ** 3  # number of all possible values
-    SHOWLOG = False
 
     def __init__(self, user_input):
         self.array = []
@@ -165,8 +164,8 @@ class Sudoku:
                 self.one_in_a_box((i, j), showlog)
 
     def one_in_a_row(self, field_num, showlog=False):
-        # if some value is present as possible for only one field, then input it there
-        # make a temp, because we'll pop the elements. Use update instead of '=' to have different id's
+        # Value possible only for one field -> write it
+        # Use update instead of '=' to have different set id's
         temp = set()
         temp.update(self.fillers[field_num[0]][field_num[1]])
         fillers_line = set()
@@ -190,8 +189,6 @@ class Sudoku:
             print("Value that fits only for this field in a line is: ", temp)
 
         if len(temp) == 1 and self.array[field_num[0]][field_num[1]] is not int(*temp):
-            if showlog:
-                print("Value is written")
             self.set_value((field_num[0], field_num[1], int(*temp)))
 
     def one_in_a_col(self, field_num, showlog=False):
