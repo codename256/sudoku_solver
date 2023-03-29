@@ -1,6 +1,4 @@
 class Sudoku:
-    NUM_OF_POSS = 9 ** 3  # number of all possible values
-
     def __init__(self, user_input, showlog=False):
         print("<" * 20, "SUDOKU INITIALIZATION", ">" * 20)
         self.array = []
@@ -53,6 +51,7 @@ class Sudoku:
                 print(("".join(str(x) for x in [*fset] if isinstance(x, (int, float))).center(10)), end=" | ")
             print()
         print("-" * 117)
+
     @staticmethod
     def numeration_help():
         print("\nSudoku created!")
@@ -156,6 +155,8 @@ class Sudoku:
         print("<<< ONE IN A BOX >>>")
         for i in range(9):
             for j in range(9):
+                if i == 8 and j == 6:
+                    pass
                 self.one_in_a_box((i, j), showlog)
 
     def one_in_a_row(self, field_num, showlog=False):
@@ -192,8 +193,6 @@ class Sudoku:
             self.set_value((field_num[0], field_num[1], int(*temp)))
 
     def one_in_a_box(self, field_num, showlog=False):
-        if field_num[0] == 2 and field_num[1] == 1:
-            pass
         # Value possible only for one field in a box -> write it
         # Use update instead of '=' to have different set id's
         temp, fillers_box, box = set(), set(), set()
@@ -208,7 +207,7 @@ class Sudoku:
         box_id = (box_ids[field_num[0]], box_ids[field_num[1]])
         for i in range(3):
             for j in range(3):
-                if [i, j] != [field_num[0], field_num[1]]:
+                if [i, j] != [(field_num[0]) % 3, (field_num[1]) % 3]:
                     fillers_box.update(self.fillers[i + 3 * box_id[0]][j + 3 * box_id[1]])
 
         temp.difference_update(fillers_box)
@@ -246,7 +245,6 @@ class Sudoku:
             self.one_in_all_fillers(showlog)
             self.show()
 
-            self.show_vals_fillers()
             print("<<<<< {} >>>>>".format(i))
 
             pass
