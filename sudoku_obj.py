@@ -192,6 +192,8 @@ class Sudoku:
             self.set_value((field_num[0], field_num[1], int(*temp)))
 
     def one_in_a_box(self, field_num, showlog=False):
+        if field_num[0] == 2 and field_num[1] == 1:
+            pass
         # Value possible only for one field in a box -> write it
         # Use update instead of '=' to have different set id's
         temp, fillers_box, box = set(), set(), set()
@@ -209,8 +211,10 @@ class Sudoku:
                 if [i, j] != [field_num[0], field_num[1]]:
                     fillers_box.update(self.fillers[i + 3 * box_id[0]][j + 3 * box_id[1]])
 
+        temp.difference_update(fillers_box)
         if len(temp) == 1 and self.array[field_num[0]][field_num[1]] != int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
+            self.fillers[field_num[0]][field_num[1]] = temp
 
     def is_done(self):
         for line in self.array:
@@ -243,6 +247,9 @@ class Sudoku:
             self.show()
 
             print("<<<<< {} >>>>>".format(i))
+
+            pass
+
             if self.is_done():
                 print("Finished after {} loops".format(i))
                 break
