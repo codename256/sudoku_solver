@@ -1,5 +1,5 @@
 class Sudoku:
-    def __init__(self, user_input, showlog=False):
+    def __init__(self, user_input):
         print("<" * 20, "SUDOKU INITIALIZATION", ">" * 20)
         self.array = []
         self.fillers = []
@@ -72,14 +72,14 @@ class Sudoku:
         print("Value for this field is determined to be:", val[2])
         self.add_value(val)
 
-    def init_fillers(self, showlog=False):
+    def init_fillers(self):
         print("\n1. If value known, leave ONLY field value in its fillers set(). Repeat for all fields")
         for i, line in enumerate(self.array):
             for j, field in enumerate(line):
                 if field != " ":
                     self.fillers[i][j].intersection_update({field})
 
-    def find_the_cross(self, field_num, showlog=False):
+    def find_the_cross(self, field_num):
         tb, lr = [], []  # top-bottom, left-right
 
         for i in range(9):
@@ -89,7 +89,7 @@ class Sudoku:
 
         return cross
 
-    def find_the_box(self, field_num, showlog=False):
+    def find_the_box(self, field_num):
         box_ids = dict()
         box = set()
         for i in range(3):
@@ -101,52 +101,50 @@ class Sudoku:
         for i in range(3):
             for j in range(3):
                 box.update({self.array[i + 3 * box_id[0]][j + 3 * box_id[1]]})
-                if showlog:
-                    print(f"'{self.array[i + 3 * box_id[0]][j + 3 * box_id[1]]}'", end="")
             box.difference_update({" ", self.array[field_num[0]][field_num[1]]})
 
         return box
 
-    def cross_fillers(self, showlog=False):
+    def cross_fillers(self):
         print("2. Remove from field filler values that are written in top-bot left-right fields (cross)")
         print("If only one filler element and the array value is ' ', then it'll be updated with the filler")
 
         for i, line in enumerate(self.array):
             for j, val in enumerate(line):
-                cross = self.find_the_cross((i, j), showlog=showlog)
+                cross = self.find_the_cross((i, j))
                 self.fillers[i][j].difference_update(cross)
 
                 if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
                     print("Updated value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
                     self.set_value((i, j, int(*self.fillers[i][j])))
 
-    def box_fillers(self, showlog=False):
+    def box_fillers(self):
         for i in range(9):
             for j in range(9):
-                box = self.find_the_box((i, j), showlog=showlog)
+                box = self.find_the_box((i, j))
                 self.fillers[i][j].difference_update(box)
 
                 if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
                     print("Update value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
                     self.set_value((i, j, int(*self.fillers[i][j])))
 
-    def one_in_all_fillers(self, showlog=False):
+    def one_in_all_fillers(self):
         print("<<< ONE IN A ROW >>>")
         for i in range(9):
             for j in range(9):
-                self.one_in_a_row((i, j), showlog)
+                self.one_in_a_row((i, j))
 
         print("<<< ONE IN A COL >>>")
         for i in range(9):
             for j in range(9):
-                self.one_in_a_col((i, j), showlog)
+                self.one_in_a_col((i, j))
 
         print("<<< ONE IN A BOX >>>")
         for i in range(9):
             for j in range(9):
-                self.one_in_a_box((i, j), showlog)
+                self.one_in_a_box((i, j))
 
-    def one_in_a_row(self, field_num, showlog=False):
+    def one_in_a_row(self, field_num):
         # Value possible only for one field -> write it
         # Use update instead of '=' to have different set id's
         temp = set()
@@ -163,7 +161,7 @@ class Sudoku:
             self.set_value((field_num[0], field_num[1], int(*temp)))
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
-    def one_in_a_col(self, field_num, showlog=False):
+    def one_in_a_col(self, field_num):
         # Value possible only for one field -> write it
         # Use update instead of '=' to have different set id's
         temp = set()
@@ -180,7 +178,7 @@ class Sudoku:
             self.set_value((field_num[0], field_num[1], int(*temp)))
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
-    def one_in_a_box(self, field_num, showlog=False):
+    def one_in_a_box(self, field_num):
         # Value possible only for one field in a box -> write it
         # Use update instead of '=' to have different set id's
         temp, fillers_box, box = set(), set(), set()
@@ -217,24 +215,24 @@ class Sudoku:
         else:
             return True
 
-    def solve(self, showlog=False):
+    def solve(self):
         i = 0
 
         while True:
             print("<"*20, "INIT FILLERS", ">"*20)
-            self.init_fillers(showlog)
+            self.init_fillers()
             self.show()
 
             print("<"*20, "CROSS FILLERS", ">"*20)
-            self.cross_fillers(showlog)
+            self.cross_fillers()
             self.show()
 
             print("<"*20, "BOX FILLERS", ">"*20)
-            self.box_fillers(showlog)
+            self.box_fillers()
             self.show()
 
             print("<"*20, "ONE IN ALL FILLERS", ">"*20)
-            self.one_in_all_fillers(showlog)
+            self.one_in_all_fillers()
             self.show()
 
             print("<<<<< {} >>>>>".format(i))
