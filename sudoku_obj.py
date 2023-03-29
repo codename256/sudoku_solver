@@ -12,7 +12,7 @@ class Sudoku:
             for _ in range(9):
                 line_filler.append(set(map(lambda x: x + 1, range(9))))
             self.fillers.append(line_filler)
-        self.numeration_help(showlog)
+        self.numeration_help()
         self.import_values(*user_input)
 
     def __repr__(self):
@@ -45,16 +45,11 @@ class Sudoku:
                 print("Val: ", self.array[i][j], "Filler: ", self.fillers[i][j])
 
     @staticmethod
-    def numeration_help(showlog=False):
-        if showlog:
-            print("\nObject created!")
-            print("Array of initial possible values created")
-            print("Values addition log: ")
-            print("\tCoordinates and values inserted as an integer xyz containing x - row, y - column, z - value")
-            print("\tValues of columns and rows are 0-8 code-wise, but are shown as 1-9 for more intuitive approach")
+    def numeration_help():
+        print("\nSudoku created!")
 
     def add_value(self, val: tuple):
-        print(f"\tInput value: row {val[0] + 1}, col {val[1] + 1}, num {val[2]}")
+        print(f"Insert value: row {val[0] + 1}, col {val[1] + 1}, num {val[2]}")
         self.array[val[0]][val[1]] = val[2]
 
     def import_values(self, *args):
@@ -74,7 +69,6 @@ class Sudoku:
             for j, field in enumerate(line):
                 if field != " ":
                     self.fillers[i][j].intersection_update({field})
-                    pass
 
     def find_the_cross(self, field_num, showlog=False):
         tb = []  # top-bottom
@@ -179,6 +173,7 @@ class Sudoku:
 
         if len(temp) == 1 and self.array[field_num[0]][field_num[1]] is not int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
+            self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
     def one_in_a_col(self, field_num, showlog=False):
         # Value possible only for one field -> write it
@@ -234,21 +229,25 @@ class Sudoku:
             print("<"*20, "INIT FILLERS", ">"*20)
             self.init_fillers(showlog)
             self.show()
+
             print("<"*20, "CROSS FILLERS", ">"*20)
             self.cross_fillers(showlog)
             self.show()
+
             print("<"*20, "BOX FILLERS", ">"*20)
             self.box_fillers(showlog)
             self.show()
+
             print("<"*20, "ONE IN ALL FILLERS", ">"*20)
             self.one_in_all_fillers(showlog)
             self.show()
+
             print("<<<<< {} >>>>>".format(i))
             if self.is_done():
                 print("Finished after {} loops".format(i))
                 break
             i += 1
-            if i > 15:
+            if i > 1:
                 break
 
 
@@ -282,14 +281,18 @@ class Sudoku:
 #                      821, 846, 868,
 #                      962])
 
-test_one_in_a_box = Sudoku([243, 373,
-                    423, 733])
-# ,
-#                446, 465, 472
-# mysud.solve(showlog=False)
-# other.solve()
-# hard_level.solve()
-test_one_in_a_box.solve(showlog=False)
+# test_one_in_a_box = Sudoku([243, 373,
+#                             423, 733])
+# test_one_in_a_row = Sudoku([129, 128,
+#                             243,
+#                             383])
+# # ,
+# #                446, 465, 472
+# # mysud.solve(showlog=False)
+# # other.solve()
+# # hard_level.solve()
+# test_one_in_a_box.solve(showlog=False)
+# test_one_in_a_row.solve(showlog=False)
 
 # td:
 # make the showlog work correctly and make it less ugly
