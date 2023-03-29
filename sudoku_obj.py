@@ -54,6 +54,7 @@ class Sudoku:
 
     @staticmethod
     def numeration_help():
+        # add initial info here if necessary
         print("\nSudoku created!")
 
     def add_value(self, val: tuple):
@@ -104,10 +105,6 @@ class Sudoku:
                     print(f"'{self.array[i + 3 * box_id[0]][j + 3 * box_id[1]]}'", end="")
             box.difference_update({" ", self.array[field_num[0]][field_num[1]]})
 
-        if showlog:
-            print(f"\nFor field ({field_num[0] + 1}, {field_num[1] + 1}), val: {self.array[field_num[0]][field_num[1]]}\
-             | "
-                  f"on screen ({field_num[0] % 3 + 1}, {field_num[1] % 3 + 1}), the box fillers set is: ", box)
         return box
 
     def cross_fillers(self, showlog=False):
