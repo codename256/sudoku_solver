@@ -24,3 +24,55 @@ hard_level = Sudoku([118, 126, 163,
 # test_one_in_a_col.solve(showlog=False)
 # test_one_in_a_box.solve(showlog=False)
 hard_level.solve()
+hard_level.show_fillers()
+hard_level.show()
+
+
+
+
+# mysud = Sudoku([111, 122, 139, 196,
+#                 255,
+#                 324, 388, 392,
+#                 419, 428, 437, 453, 481,
+#                 516, 542, 577, 593,
+#                 621, 678,
+#                 766, 771, 784,
+#                 814, 882,
+#                 923, 941, 957])
+
+# other = Sudoku([126, 134, 152,
+#                 255, 282,
+#                 323, 348, 361, 394,
+#                 418, 465, 481, 493,
+#                 576, 599,
+#                 622, 663, 685, 698,
+#                 716, 771,
+#                 835, 888,
+#                 953, 966, 989])
+#
+# hard_level = Sudoku([118, 126, 163,
+#                      245, 269, 271, 292,
+#                      354,
+#                      412, 436, 473, 495,
+#                      577,
+#                      624, 691,
+#                      714, 723, 732, 797,
+#                      821, 846, 868,
+#                      962])
+
+# test_one_in_a_box = Sudoku([243, 373,
+#                             423, 733])
+# test_one_in_a_row = Sudoku([129, 128,
+#                             243,
+#                             383])
+# # ,
+# #                446, 465, 472
+# # mysud.solve(showlog=False)
+# # other.solve()
+# # hard_level.solve()
+# test_one_in_a_box.solve(showlog=False)
+# test_one_in_a_row.solve(showlog=False)
+
+# td:
+# make the showlog work correctly and make it less ugly
+# add some way to stop the iteration when it's stuck, or it finished (with returns from functions if they did sth)
