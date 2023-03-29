@@ -72,26 +72,20 @@ class Sudoku:
         self.add_value(val)
 
     def init_fillers(self, showlog=False):
-        print("\n1. If value known, leave ONLY array->line->field->value in its fillers set(). Repeat for all fields")
+        print("\n1. If value known, leave ONLY field value in its fillers set(). Repeat for all fields")
         for i, line in enumerate(self.array):
             for j, field in enumerate(line):
                 if field != " ":
                     self.fillers[i][j].intersection_update({field})
 
     def find_the_cross(self, field_num, showlog=False):
-        tb = []  # top-bottom
-        lr = []  # left-right
+        tb, lr = [], []  # top-bottom, left-right
 
         for i in range(9):
             tb.append(self.array[i][field_num[1]])
             lr.append(self.array[field_num[0]][i])
         cross = {*tb, *lr}.difference({" ", self.array[field_num[0]][field_num[1]]})
 
-        if showlog:
-            print("Cross for: ({}, {}) | ".format(field_num[0] + 1, field_num[1] + 1), end="")
-            print("\tVal: <", self.array[field_num[0]][field_num[1]], "> | ", sep="", end="")
-            print("\tCurrently possible:", str(self.fillers[field_num[0]][field_num[1]]).ljust(27), end=" | ")
-            print("\tcross:", cross)
         return cross
 
     def find_the_box(self, field_num, showlog=False):
@@ -111,7 +105,8 @@ class Sudoku:
             box.difference_update({" ", self.array[field_num[0]][field_num[1]]})
 
         if showlog:
-            print(f"\nFor field ({field_num[0] + 1}, {field_num[1] + 1}), val: {self.array[field_num[0]][field_num[1]]} | "
+            print(f"\nFor field ({field_num[0] + 1}, {field_num[1] + 1}), val: {self.array[field_num[0]][field_num[1]]}\
+             | "
                   f"on screen ({field_num[0] % 3 + 1}, {field_num[1] % 3 + 1}), the box fillers set is: ", box)
         return box
 
@@ -124,8 +119,6 @@ class Sudoku:
                 cross = self.find_the_cross((i, j), showlog=showlog)
                 self.fillers[i][j].difference_update(cross)
 
-                if showlog:
-                    print(" " * 40 + "Updated filler:    ", self.fillers[i][j])
                 if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
                     print("Updated value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
                     self.set_value((i, j, int(*self.fillers[i][j])))
@@ -135,8 +128,7 @@ class Sudoku:
             for j in range(9):
                 box = self.find_the_box((i, j), showlog=showlog)
                 self.fillers[i][j].difference_update(box)
-                if showlog:
-                    print("\tUpdate filler:    ", self.fillers[i][j])
+
                 if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
                     print("Update value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
                     self.set_value((i, j, int(*self.fillers[i][j])))
@@ -155,8 +147,6 @@ class Sudoku:
         print("<<< ONE IN A BOX >>>")
         for i in range(9):
             for j in range(9):
-                if i == 8 and j == 6:
-                    pass
                 self.one_in_a_box((i, j), showlog)
 
     def one_in_a_row(self, field_num, showlog=False):
@@ -191,6 +181,7 @@ class Sudoku:
 
         if len(temp) == 1 and self.array[field_num[0]][field_num[1]] is not int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
+            self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
     def one_in_a_box(self, field_num, showlog=False):
         # Value possible only for one field in a box -> write it
@@ -213,7 +204,11 @@ class Sudoku:
         temp.difference_update(fillers_box)
         if len(temp) == 1 and self.array[field_num[0]][field_num[1]] != int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
-            self.fillers[field_num[0]][field_num[1]] = temp
+            self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
+
+    def advanced_search(self):
+        # Fill with ideas for improvement
+        pass
 
     def is_done(self):
         for line in self.array:
