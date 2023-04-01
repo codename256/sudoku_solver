@@ -9,22 +9,22 @@ class Sudoku:
         """
 
         print("<" * 20, "SUDOKU INITIALIZATION", ">" * 20)
-        self.array = []
+        self.board = []
         self.fillers = []
 
         for _ in range(9):
-            self.array.append([" "] * 9)
+            self.board.append([" "] * 9)
             line_filler = [set(range(1, 10)) for _ in range(9)]
             self.fillers.append(line_filler)
         print("Sudoku created")
         self.import_values(*user_input)
 
     def __repr__(self):
-        return str(self.array)
+        return str(self.board)
 
     def __str__(self):
         self.printer = ""
-        for line in self.array:
+        for line in self.board:
             self.printer += str(line) + "\n"
         return self.printer
 
@@ -33,7 +33,7 @@ class Sudoku:
         Print the sudoku table
         """
         print("\nCurrent state of the sudoku\n" + "_" * 25)
-        for i, line in enumerate(self.array):
+        for i, line in enumerate(self.board):
             print("| ", end="")
             for j, num in enumerate(line):
                 if (j + 1) % 3 == 0:
@@ -53,7 +53,7 @@ class Sudoku:
         """
         for i in range(9):
             for j in range(9):
-                print("Val: ", self.array[i][j], "Filler: ", self.fillers[i][j])
+                print("Val: ", self.board[i][j], "Filler: ", self.fillers[i][j])
 
     def show_fillers(self):
         """
@@ -77,7 +77,7 @@ class Sudoku:
             z - value (1-9)
         """
         print(f"Insert value: row {val[0] + 1}, col {val[1] + 1}, num {val[2]}")
-        self.array[val[0]][val[1]] = val[2]
+        self.board[val[0]][val[1]] = val[2]
 
     def import_values(self, *args):
         """
@@ -103,7 +103,7 @@ class Sudoku:
         :return:
         """
         print("\n1. If value known, leave ONLY field value in its fillers set(). Repeat for all fields")
-        for i, line in enumerate(self.array):
+        for i, line in enumerate(self.board):
             for j, field in enumerate(line):
                 if field != " ":
                     self.fillers[i][j].intersection_update({field})
@@ -118,9 +118,9 @@ class Sudoku:
         tb, lr = [], []  # top-bottom, left-right
 
         for i in range(9):
-            tb.append(self.array[i][field_num[1]])
-            lr.append(self.array[field_num[0]][i])
-        cross = {*tb, *lr}.difference({" ", self.array[field_num[0]][field_num[1]]})
+            tb.append(self.board[i][field_num[1]])
+            lr.append(self.board[field_num[0]][i])
+        cross = {*tb, *lr}.difference({" ", self.board[field_num[0]][field_num[1]]})
 
         return cross
 
@@ -141,8 +141,8 @@ class Sudoku:
 
         for i in range(3):
             for j in range(3):
-                box.update({self.array[i + 3 * box_id[0]][j + 3 * box_id[1]]})
-            box.difference_update({" ", self.array[field_num[0]][field_num[1]]})
+                box.update({self.board[i + 3 * box_id[0]][j + 3 * box_id[1]]})
+            box.difference_update({" ", self.board[field_num[0]][field_num[1]]})
 
         return box
 
@@ -150,18 +150,18 @@ class Sudoku:
         """
         Works on fillers
         Remove from field filler values that are written in top-bot left-right fields (cross)
-        print("If only one filler element and the array value is ' ', then it'll be updated with the filler
+        print("If only one filler element and the board value is ' ', then it'll be updated with the filler
         """
         print("2. Remove from field filler values that are written in top-bot left-right fields (cross)")
-        print("If only one filler element and the array value is ' ', then it'll be updated with the filler")
+        print("If only one filler element and the board value is ' ', then it'll be updated with the filler")
 
-        for i, line in enumerate(self.array):
+        for i, line in enumerate(self.board):
             for j, val in enumerate(line):
                 cross = self.find_the_cross((i, j))
                 self.fillers[i][j].difference_update(cross)
 
-                if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
-                    print("Updated value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
+                if len(self.fillers[i][j]) == 1 and self.board[i][j] == " ":
+                    print("Updated value from '{}' to {}".format(self.board[i][j], *self.fillers[i][j]))
                     self.set_value((i, j, int(*self.fillers[i][j])))
 
     def box_fillers(self):
@@ -174,8 +174,8 @@ class Sudoku:
                 box = self.find_the_box((i, j))
                 self.fillers[i][j].difference_update(box)
 
-                if len(self.fillers[i][j]) == 1 and self.array[i][j] == " ":
-                    print("Update value from '{}' to {}".format(self.array[i][j], *self.fillers[i][j]))
+                if len(self.fillers[i][j]) == 1 and self.board[i][j] == " ":
+                    print("Update value from '{}' to {}".format(self.board[i][j], *self.fillers[i][j]))
                     self.set_value((i, j, int(*self.fillers[i][j])))
 
     def one_in_all_fillers(self):
@@ -215,7 +215,7 @@ class Sudoku:
                 fillers_line.update(self.fillers[field_num[0]][i])
         temp.difference_update(fillers_line)
 
-        if len(temp) == 1 and self.array[field_num[0]][field_num[1]] is not int(*temp):
+        if len(temp) == 1 and self.board[field_num[0]][field_num[1]] is not int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
@@ -236,7 +236,7 @@ class Sudoku:
                 fillers_line.update(self.fillers[i][field_num[1]])
         temp.difference_update(fillers_line)
 
-        if len(temp) == 1 and self.array[field_num[0]][field_num[1]] is not int(*temp):
+        if len(temp) == 1 and self.board[field_num[0]][field_num[1]] is not int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
@@ -263,7 +263,7 @@ class Sudoku:
                     fillers_box.update(self.fillers[i + 3 * box_id[0]][j + 3 * box_id[1]])
 
         temp.difference_update(fillers_box)
-        if len(temp) == 1 and self.array[field_num[0]][field_num[1]] != int(*temp):
+        if len(temp) == 1 and self.board[field_num[0]][field_num[1]] != int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
@@ -278,7 +278,7 @@ class Sudoku:
 
         :return:
         """
-        for line in self.array:
+        for line in self.board:
             for elem in line:
                 if elem == ' ':
                     return False
