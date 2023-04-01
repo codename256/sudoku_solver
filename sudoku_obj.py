@@ -16,7 +16,7 @@ class Sudoku:
             self.array.append([" "] * 9)
             line_filler = [set(range(1, 10)) for _ in range(9)]
             self.fillers.append(line_filler)
-        self.numeration_help()
+        print("Sudoku created")
         self.import_values(*user_input)
 
     def __repr__(self):
@@ -67,11 +67,6 @@ class Sudoku:
                 print(("".join(str(x) for x in [*fset] if isinstance(x, (int, float))).center(10)), end=" | ")
             print()
         print("-" * 117)
-
-    @staticmethod
-    def numeration_help():
-        # add initial info here if necessary
-        print("\nSudoku created!")
 
     def add_value(self, val: tuple):
         """
