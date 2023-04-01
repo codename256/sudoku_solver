@@ -115,6 +115,7 @@ class Sudoku:
 
     def find_the_cross(self, field_num):
         """
+        Works on fields values
         Find the defined values (without " ") that are in one line with input field left-right and top-bottom
         Field included, but if searched for a field " ", then logically excluded
         :return: Return them as one set
@@ -130,6 +131,7 @@ class Sudoku:
 
     def find_the_box(self, field_num):
         """
+        Works on fields values
         Find the defined values (without " ") that are in one box 3x3 with input field (sudoku has 9 boxes 3x3)
         Field included, but if searched for a field " ", then logically excluded
         :return: Return them as one set
@@ -151,8 +153,9 @@ class Sudoku:
 
     def cross_fillers(self):
         """
-
-        :return:
+        Works on fillers
+        Remove from field filler values that are written in top-bot left-right fields (cross)
+        print("If only one filler element and the array value is ' ', then it'll be updated with the filler
         """
         print("2. Remove from field filler values that are written in top-bot left-right fields (cross)")
         print("If only one filler element and the array value is ' ', then it'll be updated with the filler")
@@ -167,6 +170,10 @@ class Sudoku:
                     self.set_value((i, j, int(*self.fillers[i][j])))
 
     def box_fillers(self):
+        """
+
+        :return:
+        """
         for i in range(9):
             for j in range(9):
                 box = self.find_the_box((i, j))
@@ -177,6 +184,10 @@ class Sudoku:
                     self.set_value((i, j, int(*self.fillers[i][j])))
 
     def one_in_all_fillers(self):
+        """
+
+        :return:
+        """
         print("<<< ONE IN A ROW >>>")
         for i in range(9):
             for j in range(9):
@@ -193,6 +204,10 @@ class Sudoku:
                 self.one_in_a_box((i, j))
 
     def one_in_a_row(self, field_num):
+        """
+
+        :return:
+        """
         # Value possible only for one field -> write it
         # Use update instead of '=' to have different set id's
         temp = set()
@@ -210,6 +225,10 @@ class Sudoku:
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
     def one_in_a_col(self, field_num):
+        """
+
+        :return:
+        """
         # Value possible only for one field -> write it
         # Use update instead of '=' to have different set id's
         temp = set()
@@ -227,6 +246,10 @@ class Sudoku:
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
     def one_in_a_box(self, field_num):
+        """
+
+        :return:
+        """
         # Value possible only for one field in a box -> write it
         # Use update instead of '=' to have different set id's
         temp, fillers_box, box = set(), set(), set()
@@ -256,6 +279,10 @@ class Sudoku:
         pass
 
     def is_done(self):
+        """
+
+        :return:
+        """
         for line in self.array:
             for elem in line:
                 if elem == ' ':
@@ -266,6 +293,10 @@ class Sudoku:
             return True
 
     def solve(self):
+        """
+
+        :return:
+        """
         i = 0
 
         while True:
