@@ -25,3 +25,17 @@ This is an implementation of a class for a sudoku board with methods for solving
         one_in_a_row
              ..._col
              ..._box
+
+---------------------------------------------
+Example:
+new_sud = Sudoku([118, 126, 163,
+                     245, 269, 271, 292,
+                     354,
+                     412, 436, 473, 495,
+                     577,
+                     624, 691,
+                     714, 723, 732, 797,
+                     821, 846, 868,
+                     962])
+                     
+new_sud.solve()
