@@ -29,20 +29,11 @@ three_stars = Sudoku([195,
                       727, 753, 771,
                       814, 835, 842, 851, 867, 889,
                       938])
-czarek = Sudoku([117, 176,
-                 228, 249, 263, 277,
-                 364,
-                 418, 422, 447, 469, 475, 493,
-                 533, 544, 562,
-                 627, 634, 678, 682, 699,
-                 723, 731, 774, 787, 795,
-                 846, 867, 889,
-                 919, 937, 953])
+
 
 three_stars.solve()
 three_stars.show_fillers()
 three_stars.show()
-czarek.solve()
 # test_one_in_a_row.solve(showlog=False)
 # test_one_in_a_col.solve(showlog=False)
 # test_one_in_a_box.solve(showlog=False)
