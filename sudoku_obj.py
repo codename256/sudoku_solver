@@ -7,8 +7,9 @@ class Sudoku:
     z - value(1-9)
     The (1, 1) point for x and y is the left-top cell. The last one is bot-right one with id (9, 9).
     Example:
-         Sudoku([123, 456]) - set a value of 3 in the position x: 1, y: 2
-                            - set a value of 6 in the position x: 4, y: 5
+         new_sud = Sudoku([123, 456])
+         - set a value of 3 in the position x: 1, y: 2
+         - set a value of 6 in the position x: 4, y: 5
     Sudoku is stored in two tables:
         board - each field is " ", that means empty, or 1-9 if the value is found or inserted at the start
         fillers - table of sets, for each field they start at {range(1,10)}. If any value can't be written
@@ -29,7 +30,7 @@ class Sudoku:
         swordfish
     """
 
-    def __init__(self, user_input):
+    def __init__(self, user_input: list):
         """Initialize the sudoku table according to information in Sudoku.__doc__"""
 
         print("<" * 20, "SUDOKU INITIALIZATION", ">" * 20)
@@ -108,7 +109,7 @@ class Sudoku:
             self.add_value(next_val)
         self.show()
 
-    def set_value(self, val):
+    def set_value(self, val: tuple):
         """Created to determine the difference between importing values at the start and
         setting its value after determining what's the correct one to insert.
         """
@@ -125,7 +126,7 @@ class Sudoku:
                 if field != " ":
                     self.fillers[i][j].intersection_update({field})
 
-    def find_the_cross(self, field_num):
+    def find_the_cross(self, field_num: tuple) -> set:
         """Works on fields values
         Find the defined values in board (" " doesn't count) that are in one line
         with checked field left-right and top-bottom
@@ -142,7 +143,7 @@ class Sudoku:
 
         return cross
 
-    def find_the_box(self, field_num):
+    def find_the_box(self, field_num: tuple) -> set:
         """Works on fields values
         Find the defined values in board (" " doesn't count) that are in one box 3x3
         with checked field (sudoku has 9 division boxes 3x3)
@@ -218,7 +219,7 @@ class Sudoku:
             for j in range(9):
                 self.one_in_a_box((i, j))
 
-    def one_in_a_row(self, field_num):
+    def one_in_a_row(self, field_num: tuple):
         """Checks if there is a field in the board that is the only one possible for some value in a row
         If there is one, write this value in this field. Update board and fillers
         """
@@ -238,7 +239,7 @@ class Sudoku:
             self.set_value((field_num[0], field_num[1], int(*temp)))
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
-    def one_in_a_col(self, field_num):
+    def one_in_a_col(self, field_num: tuple):
         """Checks if there is a field in the board that is the only one possible for some value in a col
         If there is one, write this value in this field. Update board and fillers
         """
@@ -246,19 +247,19 @@ class Sudoku:
         # Use update instead of '=' to have different set id's
         temp = set()
         temp.update(self.fillers[field_num[0]][field_num[1]])
-        fillers_line = set()
+        fillers_col = set()
 
         # consider: .update(*self.fillers[field_num[0]][:9]) with removing the element set
         for i in range(9):
-            if i is not field_num[1]:
-                fillers_line.update(self.fillers[i][field_num[1]])
-        temp.difference_update(fillers_line)
+            if i is not field_num[0]:
+                fillers_col.update(self.fillers[i][field_num[1]])
+        temp.difference_update(fillers_col)
 
         if len(temp) == 1 and self.board[field_num[0]][field_num[1]] is not int(*temp):
             self.set_value((field_num[0], field_num[1], int(*temp)))
             self.fillers[field_num[0]][field_num[1]].intersection_update(temp)
 
-    def one_in_a_box(self, field_num):
+    def one_in_a_box(self, field_num: tuple):
         """Checks if there is a field in the board that is the only one possible for some value in a box (3x3)
         If there is one, write this value in this field. Update board and fillers
         """
@@ -288,6 +289,13 @@ class Sudoku:
         # hidden pair
         # hidden three
         # swordfish method
+        # mixing: if there are only possible values in a column that are in one box 3-positions column, then
+        # other fields from this box should delete this value from its fillers
+        # example
+        # . . . | . . . | . . .
+        # 1 . . | . . . | 4 5 6
+        # 4 5 6 | . . . | 7 8 9
+        # the fields '.' from second row IDK...
         pass
 
     def is_done(self):
